@@ -1,7 +1,11 @@
 
 # About the project
+## My feeling about the IODS course
+This course is very essential  for all researchers and from my first week's exercises, it looks very interesting to me. I hope that the motivation I currently have would be sustained throughout the course to gain the best out of it. 
 
-*Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
+My GitHub repository link is https://github.com/agbofred/IODS-project
+
+
 
 ```{r}
 # This is a so-called "R chunk" where you can write R code.
@@ -9,5 +13,5 @@
 date()
 
 ```
-The text continues here.
+
 
