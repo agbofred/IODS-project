@@ -1,13 +1,77 @@
-# Insert chapter 2 title here
+# Regression analysis of the IODS project 
 
-*Describe the work you have done this week and summarize your learning.*
+*This section describes the steps taken to perform regression analysis of data obtained for this IODS project.*
 
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+First, let me begin by reading the data for this analysis into R from my local computer. *Please note that the data here was pre-processed throuhg Wrangling from the Helsinki Open data science project, which originally can be  found in this link http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt*   
 
 ```{r}
-date()
+# install.packages("ggplot2")
+library(ggplot2)
+# Reading the data from my local computer
+data <- read.csv("C:\\Users\\fridaya\\Documents\\IODS-project\\data\\learning2014.csv")
+learning2014 <- data
+```
+Now that we have successfully loaded the data to R, we would like to explore the structure and dimension of the data
+
+```{r}
+# Here we are checking the structure of the data learning2014
+str(learning2014)
+```
+```{r}
+# Here we are checking the dimension of the data learning2014
+dim(learning2014)
+```
+Now we would like to show the graphical overview of the data 
+
+```{r}
+# Here, we try to show the graphical entire overview of the data using plot
+
+plot(learning2014)
+```
+Figure 1
+
+In Figure 1  above, we see the overview of the variables (gender, age, attitude, deep, stra, surf, and points) in the learning2014 data frame. 
+
+*Note* that the variable "gender" scattered plot is not consistent with the other variables. This could be becuase the gender variable did not contain numeric values.
+
+```{r}
+# Here, we try to show the graphical overview of the data using pairs excluding the first variable 
+pairs(learning2014[-1])
+```
+Figure 2.
+
+Notice that we repeated the ploting of the variables in learning2014 data by using the pairs function and excluding "gender". 
+
+
+*interpretations:*
+
+Figure 2 presents the selected variables in diagonal. each row displays a variable on the y-axis and the other variables on the corresponding x- axis. For example, the first row "age" is displayed on the y-axis whereas attitude, deep, stra, and surf are displayed on the x-axis for each of the 5 plots on that row. 
+
+
+```{r}
+# Here we are using three variables to fit our regression model. The variables are attitude, and points, where points is out dependent variable.
+
+library(ggplot2)
+qplot(attitude, points, data = learning2014) + geom_smooth(method = "lm")
+
 ```
 
-Here we go again...
+```{r}
+
+# Here we try to fit our a linear model. The dependent variable is points while the explanatory variable is attitude
+model <- lm(points ~ attitude, data = learning2014)
+
+# Now let us print the summary of our model
+summary(model)
+```
+
+
+*Explanation of the model summary*
+
+
+
+```{r}
+
+
+```
+
