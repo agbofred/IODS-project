@@ -2,7 +2,7 @@
 
 *This section describes the steps taken to perform regression analysis of data obtained for this IODS project.*
 
-First, let me begin by reading the data for this analysis into R from my local computer. *Please note that the data here was pre-processed throuhg Wrangling from the Helsinki Open data science project, which originally can be  found in this link http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt*   
+First, let me begin by reading the data for this analysis into R from my local computer. *Please note that the data here was pre-processed through Wrangling from the Helsinki Open data science project, which originally can be  found in this link http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt*   
 
 ```{r}
 # install.packages("ggplot2")
@@ -64,14 +64,78 @@ model <- lm(points ~ attitude, data = learning2014)
 # Now let us print the summary of our model
 summary(model)
 ```
-
-
 *Explanation of the model summary*
 
+In our linear regression model y=α+βx+ϵ, the dependent variable y is "points", and the explanatory variable x is "attitude". 
+
+We computed the summary of the model by calling the lm function lm(formula = points ~ attitude, data = learning2014)
+
+From the summary output of the model, we see the residuals of the model and then the coefficients which estimated values for the parameters of the model. The estimate of the intercept (α) is 11.6372, while the estimate corresponding to the explanatory variable (β) is 3.5255. This imply that the effect of attitude on points is 3.5255 with standard error approx. 0.6 (t = 6.214, p< 0). The summary shows that there is statistically significant relationship between x (attitude) and y (points). 
+
+### Let us fit the model with other explanatory variables (deep, stra, and surf) to see their estimated effect on the dependant variable (points)
+
+```{r}
+
+# Here we try to fit another linear model. The dependent variable is points while the explanatory variable is deep
+model <- lm(points ~ deep, data = learning2014)
+
+# Now let us print the summary of our model
+summary(model)
+
+```
+
+The summary of this model did not show a significant relationships betwwen deep and points
 
 
 ```{r}
 
+# Here we try to fit another linear model. The dependent variable is points while the explanatory variable is stra
+model <- lm(points ~ stra, data = learning2014)
+
+# Now let us print the summary of our model
+summary(model)
 
 ```
+
+No Significance between stra and points 
+
+
+```{r}
+
+# Here we try to fit another linear model. The dependent variable is points while the explanatory variable is surf
+model <- lm(points ~ surf, data = learning2014)
+
+# Now let us print the summary of our model
+summary(model)
+
+```
+
+No significance effect of surf on points
+
+## Multiple regression 
+Multiple regression is conducted when there are more than one explanatory variables in a model.
+The above situation where each variable was fitted into the simple linear regression to estimate their individual effect on the dependent variable can be made  analysis can be simplified by conducting a multiple regression analysis
+
+```{r}
+# We would like to run a multiple regression with this code
+model2 <- lm(points ~ attitude + stra + surf, data = learning2014)
+
+# Let us print the summary of our multiple regression 
+summary(model2)
+```
+
+
+```{r}
+# Here we want to draw the diagnostic plots using the plot() function. 
+plot(model2, which = c(1,2,3), caption = list("Residuals vs Fitted", "Normal QQ-plot", "Residuals vs Leverage"))
+
+```
+
+#### Explanation of the diagnostic plots 
+
+1. For the QQ plot, the normality assumption shows reasonable fit to the line implying that the errors of the model are normally distributed.
+
+2.For the Residual VS Fitted plot shows that as the fitted values increases, the scattered plot deviates from the line.
+
+3. For the Residual VS Leverage plot there seems to be no unsual observations noticed in the plot.
 
