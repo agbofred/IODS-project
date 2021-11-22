@@ -20,3 +20,72 @@ dim(math_por)
 
 colnames(math_por)
 ```
+
+The data contain 370 observations and 51 variables. The data was read from the online ML repository, which is a combined students data from the UCI.
+
+
+```{r}
+# Let me print the heading to see the nature of the data 
+
+head(math_por)
+```
+
+
+We observe that some new variables different from the original data  collected in the separate datasets were added to the combined data. These new variables shows a suffix ".p" or ".m" indicating "por_data" and "math_data" respectively. For example, the "id.p" and "id.m"
+
+#### Variables selected to conducted anaylsis 
+I am selecting the following variables: 
+1. Sex
+2. high_use
+2. G3 (students final grade)
+3. famrel (students quality of family relationship) 
+
+Based on my variable selection, the following are my hypothesis:
+
+**H1** There is a significant difference of alcohol consuption in male and females. 
+
+**H2** Alcohol consumption can affect the quality of students' family relationship.
+
+**H3** Alcohol consumption can have a significant impact of on students' final grades. 
+
+
+``` {r}
+#This section, I am going to be explore my four variables by plotting graphs. 
+library(dplyr) 
+library(ggplot2)
+ggplot(data=math_por, aes(x=high_use, y=famrel, fill=sex))+ geom_boxplot() +
+  labs(title="Boxplot of Alcohol use vs family relationships among the genders")
+```
+*Figure 1*
+
+The boxplot in Figure 1 shows there is a slight difference in male and female alcohol consumtion which partially supports the H1.The anslysis also shows that alcohol consumption impact both female and male family relationship, which support H2. However, this impact is not  significant impact the sex.
+
+
+``` {r}
+# Here, I am trying to plot the graph of high_use of alcohol against sex and grades  
+ggplot(data=math_por, aes(x=high_use, y=G3, fill=sex))+ geom_boxplot() +
+  labs(title="Boxplot of Alcohol use vs general grades")
+```
+*Figure 2*
+
+From the analysis in Figure 2, we observe that  higher  amount of alcohol consumption affects the female students' grades significantly. This findings supports H3.  
+
+### Logistics regression analysis here!
+
+```{r}
+# find the model with glm() with variables alcohol use vs students' grades, family relationship, and sex 
+m <- glm(high_use ~ G3 + famrel + sex, data = math_por, family = "binomial")
+
+# Summary of the model is printed below
+m
+
+```
+
+
+
+
+```{r}
+#Coefficient of the model is printed here
+coef(m)
+
+```
