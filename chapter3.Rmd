@@ -1,0 +1,22 @@
+# Logical regression analysis of the IODS project 
+
+*This section describes the steps taken to perform logical regression analysis of data obtained for the Machine Learning repository*
+
+First, let me begin by reading the data for this analysis into R from online. 
+
+```{r}
+# install.packages("ggplot2")
+#library(ggplot2)
+
+# Reading the data from web address
+data <- "https://github.com/rsund/IODS-project/raw/master/data/alc.csv"
+
+# read the math class questionaire data into memory
+math_por <- read.table(data, sep = "," , header=TRUE)
+
+# We can have glimpse of the data
+str(math_por)
+dim(math_por)
+
+colnames(math_por)
+```
