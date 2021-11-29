@@ -23,7 +23,7 @@ Boston is a data frame with 14 variables and 506 observations. The variables des
 ### Task 3: Showing graphical overview of the data
 
 ```{r}
-# We wouls like to show the graphical overview of the data by calling the pairs function 
+# We would like to show the graphical overview of the data by calling the pairs function 
 pairs(Boston)
 
 ```
@@ -160,11 +160,12 @@ classes <- as.numeric(train$crime)
 
 # plot the lda results
 plot(lda.fit, dimen = 2, col = classes, pch = classes)
-lda.arrows(lda.fit, myscale = 1)
+lda.arrows(lda.fit, myscale = 2)
 
 ```
 
-## Interpreting this graph is a bit difficult for me as a non statistician :) 
+In this graph, it shows that "rad" variable is the most influential among other variables, hence the long arrow is pointing to it. Variable rad is a cluster of high (blue color) and med_high (green color)
+ 
 
 ### Task 6
 ```{r}
@@ -172,14 +173,67 @@ lda.arrows(lda.fit, myscale = 1)
 # save the correct classes from test data
 correct_classes <- test$crime
 
-# predict classes with test data
+# predicting classes with test data
 lda.pred <- predict(lda.fit, newdata = test)
 
-# cross tabulate the results
+# cross tabulating the results
 table(correct = correct_classes, predicted = lda.pred$class)
 ```
 
-Observing the predicted values in the table, the diagonal values (13,13,31,27) indicates ....
+Observing the predicted values in the table, the diagonal values (13,13,31,27) indicates some significance. 
 
 ### Task 7. 
+I am going to load the Boston dataset again by using the following lines of codes
+```{r}
+# Calling the library MASS
+library(MASS)
+
+#loading the data
+data("Boston")
+
+#scaling BIstin data set
+
+boston_scaled_2 <- scale(Boston)
+is.data.frame(boston_scaled_2)  #checking whether the boston_scalled2 is a data frame
+
+
+boston_scaled_2 <- as.data.frame(boston_scaled_2)   # converting the boston_scalled_2 to data frame
+is.data.frame(boston_scaled_2)
+```
+
+
+Here we shall now Calculate the euclidean distances between the observations. The distance matrix is usually square matrix containing the pairwise distances of the observations.
+
+```{r}
+# calculating the euclidean distance matrix
+dist_eu <- dist(boston_scaled_2)
+
+# We nlw look at the summary of the distances
+summary(dist_eu)
+
+```
+
+
+Here we will run k-means algorithm on the boston_scaled_2 data set with this codes below
+
+```{r}
+# k-means clustering
+km <-kmeans(boston_scaled_2, centers = 3)
+
+#pairs(boston_scaled_2)
+
+# plot the Boston dataset with clusters
+pairs(boston_scaled_2[7:10], col = km$cluster)
+
+```
+
+After setting the kmeans cluster to 1,2,3,4,5 and 6, I think the optimal number of cluster is 3. From the diagram above, the k-mean cluster is 3 and the numbers of pairs() plot is reduced to 4 so that the visualization can be seen clearly.
+
+It can be seen that there are 3 clusters in the plot separated with colors green, red, and black. The green cluster dominates, followed by the black cluster, and finally the red cluster.
+
+*PLEASE NOTE THAT I OBSERVED THAT EVERYTIME YOU KNIT, THE CLUSTERING CHANGES SLIGHTLY IN TERMS OF COLORS AND CONCENTRATION7GROUPING*
+
+
+
+
 
