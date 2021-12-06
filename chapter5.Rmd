@@ -132,4 +132,14 @@ library(corrplot)
 library(FactoMineR)
 data(tea)
 
+str(tea)
+dim(tea)
+
+keep_columns <- c("Tea", "How", "how", "sophisticated", "where", "spirituality")
+
+tea_time <- select(tea, one_of(keep_columns))
+mca <- MCA(tea_time, graph = FALSE)
+
+plot(mca, invisible=c("ind"), habillage = "quali", graph.type = "classic")
+
 ```
