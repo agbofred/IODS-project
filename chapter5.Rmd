@@ -1,0 +1,135 @@
+# Dimensionality reduction techniques (Chapter 5) 
+
+*In this section, we will describe the steps taken to perform the dimensionality reduction techniques with "human" data obtained and wranged.*
+
+
+
+```{r}
+#install.packages("GGally")
+library(dplyr)
+library(ggplot2)
+library(GGally)
+# Let us begin by reading the "human data from local storage 
+human <-  read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt", sep = "," , header=TRUE)
+#human <- read.csv("C:\\Users\\fridaya\\Documents\\IODS-project\\data\\human.csv")
+
+```
+#########################################################
+ *NOTE: After I completed the data wrangling the last erxercise of replacing the rownames with country did not work well. Hence, I would not continue to use that file but loaded the data from the link provided in the line 13. That altered my naming conventions*
+#############################
+
+### Let us take a look at the structure and dimention of the human data
+```{r}
+str(human) # Exploring the structure of the human data
+
+dim(human) # exploring the dimensions of the human data
+```
+
+From the data structure of the human data, it contain 155 observations and 8 variables. The names convention of the data is given in the list below 
+
+1. "Edu2.FM" = Ratio of Female and Male populations with secondary education in each country
+2. "Labo.FM " = Ratio of labour force participation of females and males in each country 
+3. "EYE" = expected years of education
+4. "LEB" = life expectancy at birth
+5. "GNI" = gross national income per capital
+6. "MMR" = maternal mortality ratio
+7. "ABR" = adolescent birth rate
+8. "PRP" = percent representation in Parliament
+
+
+### Let us look at the summary of the data
+```{r}
+# Summary of the human data
+summary(human) 
+```
+
+### Now, we would show the graphical overview of the data 
+```{r  fig.align="center", echo = FALSE,fig.width = 14}
+
+ggpairs(human)
+# pairs(human[1:4]) # The first four variables of the human data
+```
+
+Figure 1. Visualization of the variables of the human data
+
+The following observations were made from the visualization summary:
+
+1. The Ratio of Female population with secondary education to that of male population is around o.9 which shows that there is not significant difference between female and male populations with secondary education in each country 
+
+2. The data also shows that the ratio  of labour force participation of females and males in each country is not very significant since the density plot is tilted to 0.8.
+
+3. Their expected years of education is between 12 and 15 years 
+4. The life expectancy at birth is around 70 years
+5. The gross national income per capital is very low
+6. The female maternal mortality ratio is very high at the early age
+7. The adolescent birth rate is about 40 years
+8. Female percent representation in Parliament is at zero level
+
+### Task 2. Performing principal component analysis (PCA) on the not standardized human data
+
+```{r fig.align="center", out.width = '750px', dpi=200}
+# performing PCA  analysis on the unstandardized data
+pca_human <- prcomp(human)
+
+# Show the variability captured by the PCA
+summary(pca_human)
+pca_human
+```
+
+```{r, out.width = '950px', dpi=200}
+
+# Let us plot the biplot displaying the observations by the first two principal components 
+biplot(pca_human, choices = 1:2, cex = c(0.8, 1))
+#biplot(pca_human, choices = 1:2)
+```
+Figure 2. PCA plot of unstandardised data
+
+
+### Task 3. Performing principal component analysis (PCA) on the standardized human data
+
+```{r fig.align="center", echo = FALSE,fig.width = 14}
+# standardize the variables
+human_std <- scale(human)
+
+# Summary of the standardized variables
+summary(human_std)
+
+# performing PCA  analysis on the standardized data
+pca_human <- prcomp(human_std)
+
+# Show the variability captured by the PCA
+names(pca_human)
+
+```
+
+```{r, out.width = '950px', dpi=200}
+
+# Let us plot the biplot displaying the observations by the first two principal components 
+biplot(pca_human, choices = 1:2, cex = c(0.8, 1))
+
+```
+Figure 2. PCA plot of standardised data
+
+#### Explanation of the two visualization
+
+We observe that the two results of PCA in the plots are significantly different. The unstandardized PCA was clustered to the top right of the graph and most of the observations (records) were not visible to interprete. 
+However, the PCA result of the standardized data revealed almost all the observations, which makes it  easier to see the differences and correlations between them. Therefore, it is recommended to standardize data before analysing the PCA in order to gain more insight into the results.
+
+
+### Task 4
+
+To interpret the results, the biplot displays the multiple correlation between the original features and the PC. 
+The arrows pointing to the same direction as the PC axis represent the features contributing to that PC.The angle between the original features and the PC provides critical information. The smaller the angle, the more correlated the features. Lastly the lenght of the arrow indicate their standard deviations. 
+
+In the PC plot above, it was observed that Parli.f and Labo.FM are more correlated compared to Edu.Exp and Labo.FM
+
+
+### Task 5. MCA on tea data
+
+
+```{r}
+library(corrplot)
+library(FactoMineR)
+data(tea)
+
+```
