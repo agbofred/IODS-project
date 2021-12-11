@@ -1,0 +1,164 @@
+# Analysis of longitudinal data (Chapter 6) 
+
+
+*We begin in this chapter by reading the BPRS and RATS  wide form and the converted BPRSLONG and RATSLONG long form already completed and saved during the data wrangling exercise in "meet_and_repeat" R script.*
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(GGally)
+library(tidyr)
+```
+
+
+### BPRS Data 
+
+```{r}
+# Let us read the BPRS data and take a look at the data summary
+BPRS  <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt", sep=" ", header=TRUE) # BPRS Wide form
+
+# Let us check the BPRS data names, structures, and summary 
+
+names(BPRS) # ... checking the column names 
+str(BPRS) # ... checking the structure of the BPRS 
+summary(BPRS) # .... checking the summary of the BPRS data
+#BPRS
+
+```
+
+The brief psychiatric rating scale (BPRS) is used to evaluate whether or not the patient has schizophrenia. The data contain 40 observations and 11 variables.
+
+
+```{r}
+# Next, we load the long form of the BPRS saved in the local computer 
+BPRSLONG <- read.csv("C:\\Users\\fridaya\\Documents\\IODS-project\\data\\BPRSLONG.csv")
+
+# Let us check the BPRSLONG data names, structures, and summary 
+
+names(BPRSLONG) # ... checking the column names 
+str(BPRSLONG) # ... checking the structure of the BPRSLONG data
+summary(BPRSLONG) # .... checking the summary of the BPRSLONG data
+
+
+```
+
+We observed that the Long form of the data contained 360 observations and 5 variables. 
+
+
+### RATS Data 
+
+```{r}
+# Let us read the RATS data and take a look at the data summary
+RATS  <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt", sep="\t", header=TRUE) # RATS Wide form
+
+# Let us check the RATS data names, structures, and summary 
+
+names(RATS) # ... checking the column names 
+str(RATS) # ... checking the structure of the RATS 
+summary(RATS) # .... checking the summary of the RATS data
+#BPRS
+
+```
+
+The RATS data and their nutrition in its wide form  contain 16 observations and 13 variables
+
+```{r}
+# Next, we load the long form of the RATS data saved in the local computer 
+RATSLONG <- read.csv("C:\\Users\\fridaya\\Documents\\IODS-project\\data\\RATSLONG.csv")
+
+# Let us check the RATSLONG data names, structures, and summary 
+
+names(RATSLONG) # ... checking the column names 
+str(RATSLONG) # ... checking the structure of the RATSLONG 
+summary(RATSLONG) # .... checking the summary of the RATSLONG data
+
+
+
+```
+
+After converting the RATS data to its long form, we then have 176 observations and 5 variables.
+
+```{r}
+# We now want to make the ID and Group variables in RATSLONG both factors instead of integers
+RATSLONG$ID <- factor(RATSLONG$ID)
+RATSLONG$Group <- factor(RATSLONG$Group)
+
+# Lets check the structure of RATSLONG now
+str(RATSLONG)
+
+```
+
+
+
+```{r}
+# Draw the individual plot
+ggplot(RATSLONG, aes(x = Time, y = Weight, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(RATSLONG$Weight), max(RATSLONG$Weight)))
+
+
+``` 
+
+
+As we can see from the graph, the groups clearly have different values of weight. The first group seems to have the lowest weight while the last group has the highest weight
+
+Next, we will like to standardize the data RATSLONG and re-plot the graph to see if there would be difference.
+
+```{r}
+# Standardizing the the variable Weight in the RATSLONG data 
+RATSLONG <- RATSLONG %>%
+  group_by(Time) %>%
+  mutate(stdWeight = Weight) %>%
+  ungroup()
+# Let us glimpse the RATSLONG data to see the effect of our standardization
+glimpse(RATSLONG)
+
+
+# Now, let us re-draw the same  plot
+
+ggplot(RATSLONG, aes(x = Time, y = stdWeight, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  scale_y_continuous(name = "standardized bprs")
+``` 
+
+The differences in these two plots could be hard to deduce, however, it can be seen that a new feature (ID) has been added to the plot
+
+
+NOw we want to make a summary data 
+
+```{r}
+# Number of subjects (per group):
+n <- 20
+# Make a summary data:
+RATSS <- RATSLONG %>%
+  group_by(Group, Time) %>%
+  summarise( mean=mean(Weight), se=sd(Weight)/sqrt(n) ) %>%
+  ungroup()
+
+# Let us take the glimpse of the RATSS 
+
+glimpse(RATSS)
+
+```       
+
+Now, we would draw a boxplot the 
+
+```{r}
+# plotting a boxplot of the mean versus group
+ggplot(RATSS, aes(x = Group, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(Weight)")
+
+```
+
+
+
+
+

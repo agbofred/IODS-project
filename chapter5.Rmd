@@ -128,18 +128,18 @@ In the PC plot above, it was observed that Parli.f and Labo.FM are more correlat
 
 
 ```{r}
-library(corrplot)
-library(FactoMineR)
-data(tea)
+#library(corrplot)
+#library(FactoMineR)
+#data(tea)
 
-str(tea)
-dim(tea)
+#str(tea)
+#dim(tea)
 
-keep_columns <- c("Tea", "How", "how", "sophisticated", "where", "spirituality")
+#keep_columns <- c("Tea", "How", "how", "sophisticated", "where", "spirituality")
 
-tea_time <- select(tea, one_of(keep_columns))
-mca <- MCA(tea_time, graph = FALSE)
+#tea_time <- select(tea, one_of(keep_columns))
+#mca <- MCA(tea_time, graph = FALSE)
 
-plot(mca, invisible=c("ind"), habillage = "quali", graph.type = "classic")
+#plot(mca, invisible=c("ind"), habillage = "quali", graph.type = "classic")
 
 ```
