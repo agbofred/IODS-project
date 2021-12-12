@@ -150,15 +150,199 @@ glimpse(RATSS)
 Now, we would draw a boxplot the 
 
 ```{r}
+# Plotting the mean profiles 
+ggplot(RATSS, aes(x = Time, y = mean, linetype = Group, shape = Group)) +
+  geom_line() +
+  scale_linetype_manual(values = c(1,2,3)) +
+  geom_point(size=3) +
+  scale_shape_manual(values = c(1,2,3)) +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se, linetype="1"), width=0.3) +
+  theme(legend.position = c(0.9,0.4)) +
+  scale_y_continuous(name = "mean(Weight) +/- se(Weight)")
+
+```
+
+The plot of mean profiles clearly shows that there are no overlaping between the groups. This implies that the groups are different
+
+
+Next, we will Create a summary data by group 
+
+```{r}
+# creating a summary data by Group and ID with mean as the summary variable (excluding the baseline)
+RATSL8S <- RATSLONG %>%
+  filter(Time > 1) %>%
+  group_by(Group, ID) %>%
+  summarise( mean=mean(Weight) ) %>%
+  ungroup()
+
+# Lets glimpse the data
+glimpse(RATSL8S)
+
+
 # plotting a boxplot of the mean versus group
-ggplot(RATSS, aes(x = Group, y = mean)) +
+ggplot(RATSL8S, aes(x = Group, y = mean)) +
   geom_boxplot() +
   stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
   scale_y_continuous(name = "mean(Weight)")
 
+
+```
+
+The boxplot shows some outliers. Particuarly in the second group, there is a value that is very high  compared to the other groups value, which creats an outlier.
+
+
+#### Let us try to remove this outlier in the second group and see the behaviour of the graph.
+
+```{r}
+# Let us use the filter method and reset the condition
+# create a new data by filtering the outlier and adjust the ggplot code the draw the plot again with the new data
+RATSL8S1 <- RATSL8S %>% filter(mean < 550)
+
+ggplot(RATSL8S1, aes(x = Group, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun.y = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(Weight), 64 days")
+
+```
+
+As shown in the redrawn plot, the outlier was removed that the group align more properly.
+
+#### Now we need to perform formal test to show that the groups are truely different
+```{r}
+
+# Add the baseline from the original data as a new variable to the summary data
+RATSL8S2 <- RATSL8S %>%
+  mutate(baseline = RATS$WD1)
+
+# Fit the linear model with the mean as the response 
+fit <- lm(mean ~ baseline + Group, data = RATSL8S2)
+
+# Compute the analysis of variance table for the fitted model with anova()
+anova(fit)
+
+```
+
+From the analysis of variance, the group has very slightly significant correlation (0.076, p<0.001***) 
+
+
+
+### BPRS  Data 
+```{r}
+# Let us check the structure of the BPRS and BPRSLONG data again 
+
+str(BPRS) 
+
+str(BPRSLONG)
+
+# making factors out of treatment and subject variables of the Long form 
+BPRSLONG$treatment <- factor(BPRSLONG$treatment)
+BPRSLONG$subject <- factor(BPRSLONG$subject)
+
+str(BPRSLONG)
+```
+
+Now the "treatment" and "subject" variables are now factors
+
+```{r}
+# summaries of the variables
+summary(BPRSLONG)
+
+```
+
+Let us now plot the BPRSLONG data
+
+```{r}
+# Plot the BPRSLONG data
+ggplot(BPRSLONG, aes(x = week, y = bprs, group = treatment)) +
+  geom_line()
+
+#graph showing all the data
+ggplot(BPRSLONG, aes(x = week, y = bprs, linetype = subject)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(BPRSLONG$bprs), max(BPRSLONG$bprs)))
+```
+
+Let us create a regression model for the data
+```{r}
+# create a regression model RATS_reg
+BPRS_reg <- lm(bprs ~ week + treatment, data = BPRSLONG)
+
+# print out a summary of the model
+summary(BPRS_reg)
+
 ```
 
 
+
+
+Let us create the random intercept model
+```{r}
+# access library lme4
+library(lme4)
+
+# Create a random intercept model
+BPRS_ref <- lmer(bprs ~ week + treatment + (1 | subject), data = BPRSLONG, REML = FALSE)
+
+# Print the summary of the model
+summary(BPRS_ref)
+```
+
+```{r}
+
+# create a random intercept and random slope model
+BPRS_ref1 <- lmer(bprs ~ week + treatment + (week | subject), data = BPRSLONG, REML = FALSE)
+
+# print a summary of the model
+summary(BPRS_ref1)
+
+# perform an ANOVA test on the two models
+anova(BPRS_ref1, BPRS_ref)
+```
+
+#### Creating the random intersept and random slope model 
+
+```{r}
+# create a random intercept and random slope model with the interaction
+BPRS_ref2 <- lmer(bprs ~ week * treatment + (week | treatment), data = BPRSLONG, REML = FALSE)
+
+# print a summary of the model
+summary(BPRS_ref2)
+
+# perform an ANOVA test on the two models
+anova(BPRS_ref2, BPRS_ref1)
+
+# draw the plot of BPRS with the observed Weight values
+ggplot(BPRSLONG, aes(x = week, y = bprs, linetype = subject)) +
+  geom_line() +
+  scale_x_continuous(name = "Weeks") +
+  scale_y_continuous(name = "BPRS") +
+  theme(legend.position = "none") +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both)
+
+```
+
+```{r}
+
+# Create a vector of the fitted values
+Fitted <- fitted(BPRS_ref1)
+
+# create a new column fitted to RATSL
+BPRSLONG <- BPRSLONG %>% mutate(fitted = Fitted)
+
+# draw the plot of BPRS with the observed Weight values
+ggplot(BPRSLONG, aes(x = week, y = bprs, linetype = subject)) +
+  geom_line() +
+  scale_x_continuous(name = "Weeks") +
+  scale_y_continuous(name = "BPRS") +
+  theme(legend.position = "none") +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both)
+
+```
 
 
 

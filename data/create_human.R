@@ -146,3 +146,4 @@ str(human)
 
 write.csv(human,"C:\\Users\\fridaya\\Documents\\IODS-project\\data\\human.csv", row.names = FALSE)
 
+
