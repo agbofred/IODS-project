@@ -12,7 +12,7 @@ library(tidyr)
 ```
 
 
-### BPRS Data 
+### Summary of BPRS Data 
 
 ```{r}
 # Let us read the BPRS data and take a look at the data summary
@@ -46,7 +46,7 @@ summary(BPRSLONG) # .... checking the summary of the BPRSLONG data
 We observed that the Long form of the data contained 360 observations and 5 variables. 
 
 
-### RATS Data 
+### Summary of RATS data 
 
 ```{r}
 # Let us read the RATS data and take a look at the data summary
@@ -78,6 +78,9 @@ summary(RATSLONG) # .... checking the summary of the RATSLONG data
 ```
 
 After converting the RATS data to its long form, we then have 176 observations and 5 variables.
+
+
+### Analyses of Chapter 8 of MABS using the RATS data (7 points) 
 
 ```{r}
 # We now want to make the ID and Group variables in RATSLONG both factors instead of integers
@@ -226,7 +229,7 @@ From the analysis of variance, the group has very slightly significant correlati
 
 
 
-### BPRS  Data 
+### Analyses of Chapter 9 of MABS using the BPRS  Data  (8 points) 
 ```{r}
 # Let us check the structure of the BPRS and BPRSLONG data again 
 

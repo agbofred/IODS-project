@@ -185,8 +185,8 @@ library(GGally)</code></pre>
 ##   method from   
 ##   +.gg   ggplot2</code></pre>
 <pre class="r"><code>library(tidyr)</code></pre>
-<div id="bprs-data" class="section level3">
-<h3>BPRS Data</h3>
+<div id="summary-of-bprs-data" class="section level3">
+<h3>Summary of BPRS Data</h3>
 <pre class="r"><code># Let us read the BPRS data and take a look at the data summary
 BPRS  &lt;- read.table(&quot;https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt&quot;, sep=&quot; &quot;, header=TRUE) # BPRS Wide form
 
@@ -256,8 +256,8 @@ names(BPRSLONG) # ... checking the column names </code></pre>
 ##  Max.   :2.0   Max.   :20.00                      Max.   :95.00   Max.   :8</code></pre>
 <p>We observed that the Long form of the data contained 360 observations and 5 variables.</p>
 </div>
-<div id="rats-data" class="section level3">
-<h3>RATS Data</h3>
+<div id="summary-of-rats-data" class="section level3">
+<h3>Summary of RATS data</h3>
 <pre class="r"><code># Let us read the RATS data and take a look at the data summary
 RATS  &lt;- read.table(&quot;https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt&quot;, sep=&quot;\t&quot;, header=TRUE) # RATS Wide form
 
@@ -335,6 +335,9 @@ names(RATSLONG) # ... checking the column names </code></pre>
 ##  3rd Qu.:50.00  
 ##  Max.   :64.00</code></pre>
 <p>After converting the RATS data to its long form, we then have 176 observations and 5 variables.</p>
+</div>
+<div id="analyses-of-chapter-8-of-mabs-using-the-rats-data-7-points" class="section level3">
+<h3>Analyses of Chapter 8 of MABS using the RATS data (7 points)</h3>
 <pre class="r"><code># We now want to make the ID and Group variables in RATSLONG both factors instead of integers
 RATSLONG$ID &lt;- factor(RATSLONG$ID)
 RATSLONG$Group &lt;- factor(RATSLONG$Group)
@@ -470,8 +473,8 @@ anova(fit)</code></pre>
 <p>From the analysis of variance, the group has very slightly significant correlation (0.076, p&lt;0.001***)</p>
 </div>
 </div>
-<div id="bprs-data-1" class="section level3">
-<h3>BPRS Data</h3>
+<div id="analyses-of-chapter-9-of-mabs-using-the-bprs-data-8-points" class="section level3">
+<h3>Analyses of Chapter 9 of MABS using the BPRS Data (8 points)</h3>
 <pre class="r"><code># Let us check the structure of the BPRS and BPRSLONG data again 
 
 str(BPRS) </code></pre>
